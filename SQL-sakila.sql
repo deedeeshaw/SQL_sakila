@@ -152,3 +152,50 @@ where title = "Alone Trip"
 #for which you will need the names and email addresses of all Canadian customers. 
 #Use joins to retrieve this information.
 
+select 
+	first_name, last_name, email, city, country
+from customer cu
+join address a on cu.address_id = a.address_id
+join city c on a.city_id = c.city_id
+join country on c.country_id = country.country_id
+where country.country = "Canada" -- 20
+;
+
+#7d. Sales have been lagging among young families, 
+# and you wish to target all family movies for a promotion. 
+#Identify all movies categorized as family films.
+
+select title
+from film
+where film_id in 
+(select film_id
+from film_category
+where category_id in
+(select category_id 
+from category
+where name = "Family" -- 8
+))
+;
+
+#7e. Display the most frequently rented movies in descending order.
+#select title 
+#order by title desc
+
+select title, rental_date
+from rental
+join inventory on rental.inventory_id = inventory.inventory_id
+join film on film.film_id = inventory.inventory_id
+order by rental_date desc
+;
+
+# 7f. Write a query to display how much business, in dollars, each store brought in.
+select * from payment
+group by staff_id;
+
+select * from staff;
+
+select store.store_id, sum(amount)
+from store
+join staff on store.store_id = staff.store_id
+join payment on payment.staff_id = staff.staff_id
+group by store_id
