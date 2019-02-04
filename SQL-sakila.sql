@@ -189,13 +189,67 @@ order by rental_date desc
 ;
 
 # 7f. Write a query to display how much business, in dollars, each store brought in.
-select * from payment
-group by staff_id;
-
-select * from staff;
-
 select store.store_id, sum(amount)
 from store
 join staff on store.store_id = staff.store_id
 join payment on payment.staff_id = staff.staff_id
 group by store_id
+;
+
+#7g. Write a query to display for each store its store ID, city, and country.
+
+# select  * from store -- store_id and address_id
+# select * from address -- address_id and city_id
+# select * from city -- city_id, city, country_id
+# country has country_id and country
+
+select store_id, city, country
+from store s
+join address a on a.address_id = s.address_id
+join city c on c.city_id = a.city_id
+join country co on co.country_id = c.country_id
+group by store_id
+;
+
+#7h. List the top five genres in gross revenue in descending order.
+#(Hint: you may need to use the following tables: 
+#category, film_category, inventory, payment, and rental.)
+
+#select * from category -- category_id and name (of genre)
+#select * from film_category -- film_id and category_id
+#select * from inventory -- inventory_id, film_id and store_id
+#select * from payment -- rental_id and amount
+#select * from rental -- rental_id, inventory_id
+
+select category.name as "Genre", sum(amount) as "Gross Revenue"
+from payment
+join rental on payment.rental_id = rental.rental_id
+join inventory on rental.inventory_id = inventory.inventory_id
+join film_category on inventory.film_id = film_category.film_id
+join category on film_category.category_id = category.category_id
+group by category.name
+order by sum(amount) desc
+limit 5
+;
+
+#8a. In your new role as an executive, you would like to have an easy way of viewing the 
+#Top five genres by gross revenue. 
+#Use the solution from the problem above to create a view.
+create view top_five_genres as
+select category.name as "Genre", sum(amount) as "Gross Revenue"
+from payment
+join rental on payment.rental_id = rental.rental_id
+join inventory on rental.inventory_id = inventory.inventory_id
+join film_category on inventory.film_id = film_category.film_id
+join category on film_category.category_id = category.category_id
+group by category.name
+order by sum(amount) desc
+limit 5
+;
+
+#8b. How would you display the view that you created in 8a?
+select *
+from top_five_genres;
+
+#8c. You find that you no longer need the view top_five_genres. Write a query to delete it.
+drop view top_five_genres;
