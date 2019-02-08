@@ -215,12 +215,6 @@ group by store_id
 #(Hint: you may need to use the following tables: 
 #category, film_category, inventory, payment, and rental.)
 
-#select * from category -- category_id and name (of genre)
-#select * from film_category -- film_id and category_id
-#select * from inventory -- inventory_id, film_id and store_id
-#select * from payment -- rental_id and amount
-#select * from rental -- rental_id, inventory_id
-
 select category.name as "Genre", sum(amount) as "Gross Revenue"
 from payment
 join rental on payment.rental_id = rental.rental_id
